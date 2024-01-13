@@ -63,6 +63,7 @@ public class UserService {
         String password = Input.inputStr("Enter password: ");
         boolean checkUserPassForLogin = checkUserPassForLogin(username, password);
         if (checkUserPassForLogin) {
+
             MessagesService.start(myCurrentId);
         } else {
             return;

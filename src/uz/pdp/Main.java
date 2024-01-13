@@ -8,7 +8,6 @@ public class Main {
     public static void main(String[] args) {
 
         UserRepo userRepo = UserRepo.getInstance();
-
         while (true) {
             displayMenu();
             switch (Input.inputInt("Tanlang: ")) {

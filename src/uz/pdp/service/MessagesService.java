@@ -13,19 +13,31 @@ public class MessagesService {
     static MessagesRepo messagesRepo = MessagesRepo.getInstance();
 
     public static void start(Integer myCurrentId) {
-        int i = 1;
-        for (User user : userRepo.findAll()) {
-            System.out.println(i + ". " + user.getName());
-            i++;
+        while (true) {
+            int i = 0;
+            for (User user : userRepo.findAll()) {
+                if (!user.getId().equals(myCurrentId)) {
+                    continue;
+                }
+                System.out.println(i + ". " + user.getName());
+                i++;
+            }
+            Integer chooseUserForWrite = Input.inputInt("Choose: ") - 1;
+            System.out.println("CHAT: ");
+            for (Messages messages : messagesRepo.findAll()) {
+                if (messages.getFromId().equals(myCurrentId)) {
+                    System.out.println(messages.getText());
+                }
+            }
+            String text = Input.inputStr("Xabar yozing: ");
+            messagesRepo.save(new Messages(myCurrentId, text, chooseUserForWrite));
+            System.out.println("xabar yuborildi");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
-        List<Messages> all = messagesRepo.findAll();
-        for (Messages messages : all) {
-            System.out.println(messages.getText());
-        }
-        Integer user = Input.inputInt("Choose: ") - 1;
-        String text = Input.inputStr("So'z yozing: ");
-        messagesRepo.save(new Messages(myCurrentId, text, user));
-        System.out.println("Xabar yuborildi");
     }
 
 }

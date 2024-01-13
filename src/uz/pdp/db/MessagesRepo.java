@@ -2,21 +2,17 @@ package uz.pdp.db;
 
 import uz.pdp.entity.Messages;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MessagesRepo implements Repository<Messages> {
-    private final List<Messages> messagesList;
+    private final List<Messages> messages;
     private static MessagesRepo singleton;
-    List<Messages> msgList = new ArrayList<>();
-    static final String PATH = "scr/uz/pdp/db/user_messages_db.txt";
+    private static final String PATH = "src/uz/pdp/db/messages_db.txt";
 
-    public MessagesRepo(List<Messages> messages) {
-        this.messagesList = messages;
+    private MessagesRepo(List<Messages> messages) {
+        this.messages = messages;
     }
 
     public static MessagesRepo getInstance() {
@@ -26,13 +22,21 @@ public class MessagesRepo implements Repository<Messages> {
         return singleton;
     }
 
+    @SuppressWarnings("unchecked")
     private static List<Messages> loadData() {
-        return null;
+        try (
+                InputStream inputStream = new FileInputStream(PATH);
+                ObjectInputStream objectInputStream = new ObjectInputStream(inputStream)
+        ) {
+            return (List<Messages>) objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return new ArrayList<>();
+        }
     }
 
     @Override
-    public void save(Messages messages) {
-        msgList.add(messages);
+    public void save(Messages message) {
+        messages.add(message);
         uploadData();
     }
 
@@ -41,7 +45,7 @@ public class MessagesRepo implements Repository<Messages> {
                 OutputStream outputStream = new FileOutputStream(PATH);
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream)
         ) {
-            objectOutputStream.writeObject(msgList);
+            objectOutputStream.writeObject(messages);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -49,17 +53,17 @@ public class MessagesRepo implements Repository<Messages> {
 
     @Override
     public List<Messages> findAll() {
-        return msgList;
+        return messages;
     }
 
     @Override
-    public void update(Messages messages, Integer id) {
-
+    public void update(Messages message, Integer id) {
+        
     }
-
+ 
     @Override
-    public void delete(Messages messages) {
-        msgList.remove(messages);
+    public void delete(Messages messages1) {
+        messages.remove(messages1);
         uploadData();
     }
 }

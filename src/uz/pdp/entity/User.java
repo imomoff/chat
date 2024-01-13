@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.TimeZone;
 
 public class User implements Serializable {
-    private Integer id = counter++;
+    private final int id = counter++;
     private String name;
     private String password;
     private String timeZone;
-    private static Integer counter = 1;
+    public static int counter = 0;
 
     public User(String name, String password, String timeZone) {
         this.name = name;
